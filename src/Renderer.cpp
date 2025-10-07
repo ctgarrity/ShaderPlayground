@@ -804,10 +804,10 @@ void Renderer::init_imgui() {
     //init_info.PipelineCache = YOUR_PIPELINE_CACHE; // optional
     //init_info.DescriptorPool = YOUR_DESCRIPTOR_POOL; // see below Todo: Check if the DescriptorPoolSize is correct
     init_info.DescriptorPoolSize = IMGUI_IMPL_VULKAN_MINIMUM_IMAGE_SAMPLER_POOL_SIZE; // (Optional) Set to create internal descriptor pool instead of using DescriptorPool
-    init_info.Subpass = 0;
+    init_info.PipelineInfoMain.Subpass = 0;
     init_info.MinImageCount = 2;
     init_info.ImageCount = 2;
-    init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+    init_info.PipelineInfoMain.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
     init_info.UseDynamicRendering = true;
     //init_info.Allocator = YOUR_ALLOCATOR; // optional
     //init_info.CheckVkResultFn = check_vk_result; // optional
@@ -818,7 +818,7 @@ void Renderer::init_imgui() {
     pipeline_rendering_create_info.colorAttachmentCount = 1;
     pipeline_rendering_create_info.pColorAttachmentFormats = &m_swapchain_image_format;
 
-    init_info.PipelineRenderingCreateInfo = pipeline_rendering_create_info;
+    init_info.PipelineInfoMain.PipelineRenderingCreateInfo = pipeline_rendering_create_info;
 
     ImGui_ImplVulkan_Init(&init_info);
     // (this gets a bit more complicated, see example app for full reference)
