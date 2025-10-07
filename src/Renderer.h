@@ -7,10 +7,8 @@
 #include <ranges>
 #include <span>
 
-#include "Loader.h"
 #include "Descriptors.h"
 #include "Types.h"
-#include "Camera.h"
 
 #include "external/VkBootstrap.h"
 #include "SDL3/SDL.h"
@@ -89,55 +87,6 @@ struct GPUDrawPushConstants {
     VkDeviceAddress vertex_buffer;
 };
 
-struct GLTFMetallicRoughness {
-    MaterialPipeline opaque_pipeline;
-    MaterialPipeline transparent_pipeline;
-    VkDescriptorSetLayout material_layout;
-
-    struct MaterialConstants {
-        glm::vec4 color_factors;
-        glm::vec4 metal_rough_factors;
-        //padding, we need it anyway for uniform buffers
-        glm::vec4 extra[14];
-    };
-
-    struct MaterialResources {
-        AllocatedImage color_image;
-        VkSampler color_sampler;
-        AllocatedImage metal_rough_image;
-        VkSampler metal_rough_sampler;
-        VkBuffer data_buffer;
-        uint32_t data_buffer_offset;
-    };
-
-    DescriptorWriter writer;
-
-    void build_pipelines(Renderer* renderer);
-    void clear_resources(VkDevice device);
-    MaterialInstance write_material(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocatorGrowable& descriptor_allocator);
-};
-
-struct MeshNode : public Node {
-    std::shared_ptr<MeshAsset> mesh;
-
-    void Draw(const glm::mat4& top_matrix, DrawContext& draw_context) override;
-};
-
-struct RenderObject {
-    uint32_t index_count;
-    uint32_t first_index;
-    VkBuffer index_buffer;
-    MaterialInstance* material;
-    Bounds bounds;
-    glm::mat4 transform;
-    VkDeviceAddress vertex_buffer_address;
-};
-
-struct DrawContext {
-    std::vector<RenderObject> opaque_surfaces;
-    std::vector<RenderObject> transparent_surfaces;
-};
-
 struct EngineStats {
     float frame_time;
     int triangle_count;
@@ -166,7 +115,7 @@ public:
     AllocatedImage m_grey_image;
     VkSampler m_default_sampler_linear;
     VkSampler m_default_sampler_nearest;
-    GLTFMetallicRoughness m_metal_rough_material;
+
     AllocatedImage create_image(VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
     AllocatedImage create_image(void* data, VkExtent3D size, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
     void destroy_buffer(const AllocatedBuffer &buffer);
@@ -211,10 +160,6 @@ private:
 
     VkPipeline m_compute_pipeline = VK_NULL_HANDLE;
     VkPipelineLayout m_compute_pipeline_layout = VK_NULL_HANDLE;
-    VkPipeline m_triangle_pipeline = VK_NULL_HANDLE;
-    VkPipelineLayout m_triangle_pipeline_layout = VK_NULL_HANDLE;
-    VkPipeline m_mesh_pipeline = VK_NULL_HANDLE;
-    VkPipelineLayout m_mesh_pipeline_layout = VK_NULL_HANDLE;
 
     VkFence m_imm_fence = VK_NULL_HANDLE;
     VkCommandBuffer m_imm_command_buffer = VK_NULL_HANDLE;
@@ -224,20 +169,9 @@ private:
     int m_current_background_effect = 0;
 
     MousePosition m_mouse_position = {};
-    GPUMeshBuffers m_rectangle = {};
-
-    std::vector<std::shared_ptr<MeshAsset>> m_test_meshes;
-
-    GPUSceneData m_scene_data;
 
     VkDescriptorSetLayout m_single_image_descriptor_layout;
     MaterialInstance m_default_data;
-
-    DrawContext m_main_draw_context;
-    std::unordered_map<std::string, std::shared_ptr<Node>> m_loaded_nodes;
-
-    Camera m_main_camera;
-    std::unordered_map<std::string, std::shared_ptr<LoadedGLTF>> m_loaded_scenes;
 
     EngineStats m_stats;
 
@@ -262,11 +196,7 @@ private:
     void init_imgui();
     void draw_imgui(VkCommandBuffer cmd, VkImageView target_image_view);
     void immediate_submit(std::function<void(VkCommandBuffer cmd)>&& function);
-    void init_triangle_pipeline();
-    void draw_geometry(VkCommandBuffer cmd);
-    void init_mesh_pipeline();
     void init_default_data();
-    void update_scene();
 };
 
 #endif //PORTFOLIO_RENDERER_H

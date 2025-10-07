@@ -21,10 +21,7 @@ add_executable(ShaderPlayground
         src/Initializers.cpp
         src/Utilities.cpp
         src/VmaUsage.cpp
-        src/PipelineBuilder.cpp
-        src/Loader.cpp
         src/Descriptors.cpp
-        src/Camera.cpp
         src/StbUsage.cpp
         src/Actor.cpp
 )
