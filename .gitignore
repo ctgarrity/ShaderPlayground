@@ -1,0 +1,67 @@
+# ---- CMake ----
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+# ---- Build directories ----
+/build/
+/cmake-build-*/
+
+# ---- Compiled binaries ----
+*.exe
+*.exe.stackdump
+*.out
+*.app
+*.i*86
+*.x86_64
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+*.lo
+*.la
+
+# ---- Object & intermediate files ----
+*.o
+*.obj
+*.gch
+*.pch
+*.pdb
+*.mod
+*.slo
+
+# ---- Logs & coverage ----
+*.log
+*.gcda
+*.gcno
+*.gcov
+
+# ---- CLion / JetBrains IDE ----
+.idea/
+*.iml
+out/
+
+# ---- OS-specific ----
+# Linux
+*~
+.cache/
+*.swp
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# ------------ Visual Studio ------------
+.vs/
